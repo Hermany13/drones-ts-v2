@@ -1,9 +1,7 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <h1 class="title">SoluCX Drone Test</h1>
     <router-view/>
   </div>
 </template>
@@ -28,5 +26,12 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+.title {
+  font-size: 35px;
+  font-weight: bold;
+  color: #32a0ff;
+  margin-top: 50px;
 }
 </style>
