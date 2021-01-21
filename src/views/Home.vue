@@ -3,10 +3,17 @@
     <div class="content-container">
       <div class="table-container" v-bind:class="[defaultPage ? 'hide' : 'show']">
         <div class="search-section">
-          <div class="input-container">
+          <div class="input-container-id">
             <span>Drone Id</span>
-            <form v-on:submit.prevent="id !== '' ? fetchDataId() : fetchData()"> 
+            <form v-on:submit.prevent="id !== '' ? fetchIdSearch() : fetchData()"> 
             <input v-model="id"/>
+            </form>
+          </div>
+
+          <div class="input-container-name">
+            <span>Name</span>
+            <form v-on:submit.prevent="name !== '' ? fetchNameSearch() : fetchData()"> 
+            <input v-model="name"/>
             </form>
           </div>
         </div>
@@ -90,7 +97,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 // Services
-import { fetchQuery, Drones } from '@/services/drones';
+import { fetchQuery, fetchSearchData, Drones } from '@/services/drones';
 
 // Helpers
 import queryBuilder from '@/helpers/QueryBuilder';
@@ -109,22 +116,26 @@ export default class Home extends Vue {
   defaultPage = Number(this.$router.currentRoute.meta.page);
 
   // Query
-  id = '';
   page = Number(this.$router.currentRoute.params.page);
   sort = '';
   order = 'asc';
 
   // Search
-  searchId = '';
+  name = '';
+  id = '';
 
   async mounted() {
     const query = queryBuilder(this.id, String(this.page), this.sort, this.order);
     this.drones = await fetchQuery(query);
   }
 
-  async fetchDataId() {
+  async fetchIdSearch() {
     const response = await fetchQuery(`/${this.id}`);
     this.drones = [response];
+  }
+
+  async fetchNameSearch() {
+    this.drones = await fetchSearchData(this.name);
   }
 
   async fetchData() {
@@ -205,19 +216,19 @@ export default class Home extends Vue {
     margin: 0 auto;
   }
 
-  .content-container > .table-container > .search-section > .input-container {
+  .content-container > .table-container > .search-section > .input-container-id {
     display: grid;
     text-align: left;
     margin-bottom: 20px;
   }
 
-  .content-container > .table-container > .search-section > .input-container > span {
+  .content-container > .table-container > .search-section > .input-container-id > span {
     color: #32a0ff;
     font-weight: bold;
     font-size: 13px;
   }
 
-  .content-container > .table-container > .search-section > .input-container > form > input {
+  .content-container > .table-container > .search-section > .input-container-id > form > input {
     border: 1px solid #92ccff;
     height: 36px;
     width: 120px;
@@ -225,9 +236,38 @@ export default class Home extends Vue {
     background-color: #e7f4ff;
     text-indent: 5px;
     color: #32a0ff;
+    margin-top: 5px;
   }
 
-  .content-container > .table-container > .search-section > .input-container > input:focus {
+  .content-container > .table-container > .search-section > .input-container-id > form > input:focus {
+    outline-width: 0;
+  }
+
+  .content-container > .table-container > .search-section > .input-container-name {
+    display: grid;
+    text-align: left;
+    margin-bottom: 20px;
+    margin-left: 50px;
+  }
+
+  .content-container > .table-container > .search-section > .input-container-name > span {
+    color: #32a0ff;
+    font-weight: bold;
+    font-size: 13px;
+  }
+
+  .content-container > .table-container > .search-section > .input-container-name > form > input {
+    border: 1px solid #92ccff;
+    height: 36px;
+    width: 200px;
+    border-radius: 8px;
+    background-color: #e7f4ff;
+    text-indent: 5px;
+    color: #32a0ff;
+    margin-top: 5px;
+  }
+
+  .content-container > .table-container > .search-section > .input-container-name > form > input:focus {
     outline-width: 0;
   }
 
