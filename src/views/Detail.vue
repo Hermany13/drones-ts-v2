@@ -65,7 +65,7 @@
                             Status
                         </div>
                         <div class="detail-data">
-                            {{ drone.fly }}
+                            {{ drone.status }}
                         </div>
                     </div>
                 </div>

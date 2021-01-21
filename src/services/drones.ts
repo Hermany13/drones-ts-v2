@@ -1,7 +1,7 @@
 import api from './api';
 
 // Helpers
-import { SearchHelper } from '@/helpers/SearchHelper';
+import { SearchHelper, StatusFilterHelper } from '@/helpers/SearchHelper';
 export interface Drones {
     id?: number;
     image?: string;
@@ -10,7 +10,7 @@ export interface Drones {
     battery?: number;
     max_speed?: number;
     average_speed?: number;
-    status?: string;
+    status: string;
     fly?: number;
 }
 
@@ -28,4 +28,12 @@ export const fetchSearchData = async (search: string = '') => {
   );
 
   return SearchHelper(search, drones);
+};
+
+export const fetchSearchStatusData = async (search: string = '') => {
+  const { data: drones } = await api.get<Drones[]>(
+    `/drones`,
+  );
+
+  return StatusFilterHelper(search, drones);
 };
