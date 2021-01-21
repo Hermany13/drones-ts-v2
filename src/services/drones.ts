@@ -12,9 +12,9 @@ export interface Drones {
     fly?: number;
 }
 
-export const fetchQuery = async (query: string): Promise<Drones[]> => {
+export const fetchQuery = async (query: string = ''): Promise<Drones[]> => {
   const { data: drones } = await api.get<Drones[]>(
-    `/drones${query}&_limit=7`,
+    `/drones${query}`,
   );
   const result: Drones[] = drones;
   return result;

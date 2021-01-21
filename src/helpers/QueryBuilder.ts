@@ -1,12 +1,19 @@
-const queryBuilder = (id: string = '', page: string = '', sort: string = '', order: string = '') => {
+const queryBuilder = (
+    id: string = '',
+    page: string = '',
+    sort: string = '',
+    order: string = '',
+    limit: string = '7'
+    ) => {
+
     let query = '';
 
     id ? query = query + `/${id}` : '';
     query = query + '?';
-    page ? query = query + `_page=${page}` : '';
-    sort ? query = query + `&_sort=${sort}` : '';
-    order ? query = query + `&_order=${order}` : '';
-
+    query = query + `_page=${page}`;
+    query = query + `&_sort=${sort}`;
+    query = query + `&_order=${order}`;
+    query = query + `&_limit=${limit}`;
     return query;
 }
 
