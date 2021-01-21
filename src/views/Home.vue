@@ -39,7 +39,7 @@
             <th scope="col" class="head-drones" v-on:click="sortData('battery')"><div><span>BATTERIES</span><img v-bind:class="[order === 'asc' ? 'asc' : 'desc']" src="https://cdn.iconscout.com/icon/free/png-256/keyboard-arrow-up-1782046-1514246.png"/></div></th>
             <th scope="col" class="head-drones" v-on:click="sortData('max_speed')"><div><span>MAX SPEED</span><img v-bind:class="[order === 'asc' ? 'asc' : 'desc']" src="https://cdn.iconscout.com/icon/free/png-256/keyboard-arrow-up-1782046-1514246.png"/></div></th>
             <th scope="col" class="head-drones" v-on:click="sortData('average_speed')"><div><span>AVERAGE SPEED</span><img v-bind:class="[order === 'asc' ? 'asc' : 'desc']" src="https://cdn.iconscout.com/icon/free/png-256/keyboard-arrow-up-1782046-1514246.png"/></div></th>
-            <th scope="col">CURRENT FLY</th>
+            <th scope="col" class="head-drones" v-on:click="sortData('fly')"><div><span>CURRENT FLY</span><img v-bind:class="[order === 'asc' ? 'asc' : 'desc']" src="https://cdn.iconscout.com/icon/free/png-256/keyboard-arrow-up-1782046-1514246.png"/></div></th>
             <th scope="col" class="status-head">STATUS</th>
           </thead>
           <tbody>
@@ -74,7 +74,14 @@
                 <SpeedMarker :speed="drone.average_speed"/>
               </td>
               <td scope="row" v-bind:class="[drone.fly == 0 ? 'line' : 'hide-line']">
-                <span>{{ drone.fly }}</span>
+                <span>
+                  <div class="fly-component" v-bind:class="[drone.fly >= 50 ? 'going' : 'returning']">
+                    <div class="fly-line" v-bind:style="{ 'padding-left': drone.fly + '%'}">
+                      <div class="fly-ball"></div>
+                    </div>
+                    <div class="arrow"></div>
+                  </div>
+                </span>
                 <div></div>
               </td>
               <td scope="row">
@@ -391,6 +398,46 @@ export default class Home extends Vue {
   .content-container > .table-container > .table > tbody > tr > td.hide-line > div {
     display: none;
   }
+
+  .content-container > .table-container > .table > tbody > tr > td.hide-line
+  > span > .returning {
+    display: grid;
+    grid-template-columns: 100% 1px;
+  }
+
+  .content-container > .table-container > .table > tbody > tr > td.hide-line
+  > span > .going {
+    display: grid;
+    grid-template-columns: 100% 1px;
+    transform: rotate(180deg);
+  }
+
+  .content-container > .table-container > .table > tbody > tr > td.hide-line
+  > span > .fly-component > .arrow {
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-left: 10px solid #32a0ff;
+    border-bottom: 5px solid transparent;
+    margin-top: -4px;
+  } 
+
+  .content-container > .table-container > .table > tbody > tr > td.hide-line
+  > span > .fly-component > .fly-line {
+    width: 100%;
+    border: 1px solid #32a0ff;
+    height: 1px;
+  }
+
+  .content-container > .table-container > .table > tbody > tr > td.hide-line
+  > span > .fly-component > .fly-line > .fly-ball {
+    width: 12px;
+    border: 1px solid #32a0ff;
+    height: 12px;
+    border-radius: 8px;
+    background-color: #fff;
+    margin-top: -6px;
+  } 
 
   .content-container > .table-container > .table > tbody > tr > td.hide-line.customer > .customer-content  {
     display: none;
