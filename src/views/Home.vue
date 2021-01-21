@@ -2,13 +2,21 @@
   <div class="home">
     <div class="content-container">
       <div class="table-container" v-bind:class="[defaultPage ? 'hide' : 'show']">
+        <div class="search-section">
+          <div class="input-container">
+            <span>Drone Id</span>
+            <form v-on:submit.prevent="id !== '' ? fetchDataId() : fetchData()"> 
+            <input v-model="id"/>
+            </form>
+          </div>
+        </div>
         <table class="table">
           <thead>
             <th scope="col" class="head-drones" v-on:click="sortData('id')"><div><span>DRONE</span><img v-bind:class="[order === 'asc' ? 'asc' : 'desc']" src="https://cdn.iconscout.com/icon/free/png-256/keyboard-arrow-up-1782046-1514246.png"/></div></th>
-            <th scope="col" v-on:click="sortData('name')">CUSTOMER</th>
-            <th scope="col">BATTERIES</th>
-            <th scope="col">MAX SPEED</th>
-            <th scope="col">AVERAGE SPEED</th>
+            <th scope="col" class="head-drones" v-on:click="sortData('name')"><div><span>CUSTOMER</span><img v-bind:class="[order === 'asc' ? 'asc' : 'desc']" src="https://cdn.iconscout.com/icon/free/png-256/keyboard-arrow-up-1782046-1514246.png"/></div></th>
+            <th scope="col" class="head-drones" v-on:click="sortData('battery')"><div><span>BATTERIES</span><img v-bind:class="[order === 'asc' ? 'asc' : 'desc']" src="https://cdn.iconscout.com/icon/free/png-256/keyboard-arrow-up-1782046-1514246.png"/></div></th>
+            <th scope="col" class="head-drones" v-on:click="sortData('max_speed')"><div><span>MAX SPEED</span><img v-bind:class="[order === 'asc' ? 'asc' : 'desc']" src="https://cdn.iconscout.com/icon/free/png-256/keyboard-arrow-up-1782046-1514246.png"/></div></th>
+            <th scope="col" class="head-drones" v-on:click="sortData('average_speed')"><div><span>AVERAGE SPEED</span><img v-bind:class="[order === 'asc' ? 'asc' : 'desc']" src="https://cdn.iconscout.com/icon/free/png-256/keyboard-arrow-up-1782046-1514246.png"/></div></th>
             <th scope="col">CURRENT FLY</th>
             <th scope="col" class="status-head">STATUS</th>
           </thead>
@@ -106,9 +114,17 @@ export default class Home extends Vue {
   sort = '';
   order = 'asc';
 
+  // Search
+  searchId = '';
+
   async mounted() {
     const query = queryBuilder(this.id, String(this.page), this.sort, this.order);
     this.drones = await fetchQuery(query);
+  }
+
+  async fetchDataId() {
+    const response = await fetchQuery(`/${this.id}`);
+    this.drones = [response];
   }
 
   async fetchData() {
@@ -181,6 +197,40 @@ export default class Home extends Vue {
     width: 1060px;
     margin-top: 20px;
   }
+
+  .content-container > .table-container > .search-section {
+    display: flex;
+    width: 98%;
+    justify-content: flex-start;
+    margin: 0 auto;
+  }
+
+  .content-container > .table-container > .search-section > .input-container {
+    display: grid;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .content-container > .table-container > .search-section > .input-container > span {
+    color: #32a0ff;
+    font-weight: bold;
+    font-size: 13px;
+  }
+
+  .content-container > .table-container > .search-section > .input-container > form > input {
+    border: 1px solid #92ccff;
+    height: 36px;
+    width: 120px;
+    border-radius: 8px;
+    background-color: #e7f4ff;
+    text-indent: 5px;
+    color: #32a0ff;
+  }
+
+  .content-container > .table-container > .search-section > .input-container > input:focus {
+    outline-width: 0;
+  }
+
 
   .content-container > .table-container > .navigation > .pagination {
     justify-content: center;
