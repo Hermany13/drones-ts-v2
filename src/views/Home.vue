@@ -16,9 +16,24 @@
             <input v-model="name"/>
             </form>
           </div>
+
+          <div class="input-container-name">
+            <span>Status</span>
+            <form v-on:submit.prevent="status !== '' ? fetchStatusSearch() : fetchData()"> 
+            <select v-model="status" @change="status !== '' ? fetchStatusSearch() : fetchData()">
+              <option disabled value="">Select</option>
+              <option>success</option>
+              <option>flying</option>
+              <option>repair</option>
+              <option>offline</option>
+              <option>failed</option>
+              <option>charging</option>
+            </select>
+            </form>
+          </div>
         </div>
         <table class="table">
-          <thead>
+          <thead v-bind:class="[id !== '' ? 'lock' : 'unlock']">
             <th scope="col" class="head-drones" v-on:click="sortData('id')"><div><span>DRONE</span><img v-bind:class="[order === 'asc' ? 'asc' : 'desc']" src="https://cdn.iconscout.com/icon/free/png-256/keyboard-arrow-up-1782046-1514246.png"/></div></th>
             <th scope="col" class="head-drones" v-on:click="sortData('name')"><div><span>CUSTOMER</span><img v-bind:class="[order === 'asc' ? 'asc' : 'desc']" src="https://cdn.iconscout.com/icon/free/png-256/keyboard-arrow-up-1782046-1514246.png"/></div></th>
             <th scope="col" class="head-drones" v-on:click="sortData('battery')"><div><span>BATTERIES</span><img v-bind:class="[order === 'asc' ? 'asc' : 'desc']" src="https://cdn.iconscout.com/icon/free/png-256/keyboard-arrow-up-1782046-1514246.png"/></div></th>
@@ -32,8 +47,8 @@
               <td scope="row">
                 {{ drone.id }}
               </td>
-              <td scope="row" class="customer">
-                <div class="customer-content">
+              <td scope="row" class="customer" v-bind:class="[drone.fly == 0 ? 'hide-line' : '']">
+                <div class="customer-content" >
                   <div class="customer-img">
                     <img v-bind:src="drone.image" />
                   </div>
@@ -58,8 +73,9 @@
               <td scope="row" class="speed">
                 <SpeedMarker :speed="drone.average_speed"/>
               </td>
-              <td scope="row">
-                {{ drone.fly }}
+              <td scope="row" v-bind:class="[drone.fly == 0 ? 'line' : 'hide-line']">
+                <span>{{ drone.fly }}</span>
+                <div></div>
               </td>
               <td scope="row">
                 <span class="badge"
@@ -97,7 +113,12 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 // Services
-import { fetchQuery, fetchSearchData, Drones } from '@/services/drones';
+import { 
+  fetchQuery,
+  fetchSearchData,
+  fetchSearchStatusData,
+  Drones
+} from '@/services/drones';
 
 // Helpers
 import queryBuilder from '@/helpers/QueryBuilder';
@@ -123,6 +144,7 @@ export default class Home extends Vue {
   // Search
   name = '';
   id = '';
+  status = '';
 
   async mounted() {
     const query = queryBuilder(this.id, String(this.page), this.sort, this.order);
@@ -136,6 +158,10 @@ export default class Home extends Vue {
 
   async fetchNameSearch() {
     this.drones = await fetchSearchData(this.name);
+  }
+
+  async fetchStatusSearch() {
+    this.drones = await fetchSearchStatusData(this.status);
   }
 
   async fetchData() {
@@ -239,7 +265,7 @@ export default class Home extends Vue {
     margin-top: 5px;
   }
 
-  .content-container > .table-container > .search-section > .input-container-id > form > input:focus {
+  .content-container > .table-container > .search-section > .input-container-id > form > input, select:focus {
     outline-width: 0;
   }
 
@@ -256,7 +282,7 @@ export default class Home extends Vue {
     font-size: 13px;
   }
 
-  .content-container > .table-container > .search-section > .input-container-name > form > input {
+  .content-container > .table-container > .search-section > .input-container-name > form > input, select {
     border: 1px solid #92ccff;
     height: 36px;
     width: 200px;
@@ -297,6 +323,14 @@ export default class Home extends Vue {
     color: #50ACFB;
     border-bottom: 0.5px solid #92ccff;
     text-align: left;
+  }
+
+  .content-container > .table-container > .table > thead.lock {
+    pointer-events: none;
+  }
+
+  .content-container > .table-container > .table > thead.unlock {
+    pointer-events: unset;
   }
 
   .content-container > .table-container > .table > thead > th.head-drones {
@@ -341,6 +375,25 @@ export default class Home extends Vue {
     vertical-align: inherit;
     border-top: none;
     border-bottom: 0.5px solid #92ccff;
+  }
+
+  .content-container > .table-container > .table > tbody > tr > td.line > div {
+    width: 100%;
+    margin: 0 auto;
+    height: 1px;
+    border: 1px dashed #32a0ff;
+  }
+
+  .content-container > .table-container > .table > tbody > tr > td.line > span {
+    display: none;
+  }
+
+  .content-container > .table-container > .table > tbody > tr > td.hide-line > div {
+    display: none;
+  }
+
+  .content-container > .table-container > .table > tbody > tr > td.hide-line.customer > .customer-content  {
+    display: none;
   }
 
   .content-container > .table-container > .table > tbody > tr > td.customer {
