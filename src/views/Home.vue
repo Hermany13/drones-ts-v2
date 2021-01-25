@@ -76,7 +76,9 @@
                 </div>
               </td>
               <td scope="row">
-                <b-progress :value="drone.battery" :max="100" height="4px"></b-progress>
+                <b-button v-b-tooltip.hover v-bind:title="`${drone.battery}%`">
+                  <b-progress :value="drone.battery" :max="100" height="4px"></b-progress>
+                </b-button>
               </td>
               <td scope="row" class="speed">
                 <SpeedMarker :speed="drone.max_speed"/>
@@ -403,6 +405,10 @@ export default class Home extends Vue {
     border-bottom: 0.5px solid #92ccff;
   }
 
+  .content-container > .table-container > .table > tbody > tr {
+    height: 85px;
+  }
+
   .content-container > .table-container > .table > tbody > tr > td.line > div {
     width: 100%;
     margin: 0 auto;
@@ -526,7 +532,24 @@ export default class Home extends Vue {
     margin-bottom: 0;
   }
 
-  .content-container > .table-container > .table > tbody > tr > td > div.progress {
+  .content-container > .table-container > .table > tbody > tr > td > button {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    cursor: unset;
+  }
+
+  .content-container > .table-container > .table > tbody > tr > td > button:focus {
+    border: none;
+    box-shadow: none;
+  }
+
+  .content-container > .table-container > .table > tbody > tr > td > button.btn-secondary:focus {
+    border: none;
+    box-shadow: unset;
+  }
+
+  .content-container > .table-container > .table > tbody > tr > td > button > div.progress {
     background-color: #bde0ff;
   }
 
