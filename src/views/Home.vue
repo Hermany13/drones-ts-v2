@@ -18,6 +18,17 @@
           </div>
 
           <div class="input-container-name">
+            <span>Current Fly</span>
+            <form v-on:submit.prevent="fly !== '' ? fetchFlySearch() : fetchData()"> 
+            <select v-model="fly" @change="fly !== '' ? fetchFlySearch() : fetchData()">
+              <option disabled value="">Select</option>
+              <option>Going</option>
+              <option>Coming</option>
+            </select>
+            </form>
+          </div>
+
+          <div class="input-container-name">
             <span>Status</span>
             <form v-on:submit.prevent="status !== '' ? fetchStatusSearch() : fetchData()"> 
             <select v-model="status" @change="status !== '' ? fetchStatusSearch() : fetchData()">
@@ -74,6 +85,7 @@
                 <SpeedMarker :speed="drone.average_speed"/>
               </td>
               <td scope="row" v-bind:class="[drone.fly == 0 ? 'line' : 'hide-line']">
+                <b-button v-b-tooltip.hover v-bind:title="drone.fly <= 50 ? 'Going' : 'Coming'">
                 <span>
                   <div class="fly-component" v-bind:class="[drone.fly >= 50 ? 'going' : 'returning']">
                     <div class="fly-line" v-bind:style="{ 'padding-left': drone.fly + '%'}">
@@ -82,6 +94,7 @@
                     <div class="arrow"></div>
                   </div>
                 </span>
+                </b-button>
                 <div></div>
               </td>
               <td scope="row">
@@ -124,7 +137,7 @@ import {
   fetchQuery,
   fetchSearchData,
   fetchSearchStatusData,
-  Drones
+  fetchSearchFlyData
 } from '@/services/drones';
 
 // Helpers
@@ -138,6 +151,7 @@ import SpeedMarker from '@/components/SpeedMarker.vue';
     SpeedMarker,
   }
 })
+
 export default class Home extends Vue {
 
   drones: object = {};
@@ -151,6 +165,7 @@ export default class Home extends Vue {
   // Search
   name = '';
   id = '';
+  fly = '';
   status = '';
 
   async mounted() {
@@ -165,6 +180,10 @@ export default class Home extends Vue {
 
   async fetchNameSearch() {
     this.drones = await fetchSearchData(this.name);
+  }
+
+  async fetchFlySearch() {
+    this.drones = await fetchSearchFlyData(this.fly);
   }
 
   async fetchStatusSearch() {
@@ -263,7 +282,7 @@ export default class Home extends Vue {
 
   .content-container > .table-container > .search-section > .input-container-id > form > input {
     border: 1px solid #92ccff;
-    height: 36px;
+    height: 43px;
     width: 120px;
     border-radius: 8px;
     background-color: #e7f4ff;
@@ -291,7 +310,7 @@ export default class Home extends Vue {
 
   .content-container > .table-container > .search-section > .input-container-name > form > input, select {
     border: 1px solid #92ccff;
-    height: 36px;
+    height: 43px;
     width: 200px;
     border-radius: 8px;
     background-color: #e7f4ff;
@@ -391,7 +410,7 @@ export default class Home extends Vue {
     border: 1px dashed #32a0ff;
   }
 
-  .content-container > .table-container > .table > tbody > tr > td.line > span {
+  .content-container > .table-container > .table > tbody > tr > td.line > button {
     display: none;
   }
 
@@ -400,20 +419,34 @@ export default class Home extends Vue {
   }
 
   .content-container > .table-container > .table > tbody > tr > td.hide-line
-  > span > .returning {
+  > button {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    cursor: unset;
+  }
+
+  .content-container > .table-container > .table > tbody > tr > td.hide-line
+  > button.btn-secondary:focus {
+    border: none;
+    box-shadow: unset;
+  }
+
+  .content-container > .table-container > .table > tbody > tr > td.hide-line
+  > button > span > .returning {
     display: grid;
     grid-template-columns: 100% 1px;
   }
 
   .content-container > .table-container > .table > tbody > tr > td.hide-line
-  > span > .going {
+  > button > span > .going {
     display: grid;
     grid-template-columns: 100% 1px;
     transform: rotate(180deg);
   }
 
   .content-container > .table-container > .table > tbody > tr > td.hide-line
-  > span > .fly-component > .arrow {
+  > button > span > .fly-component > .arrow {
     width: 0;
     height: 0;
     border-top: 5px solid transparent;
@@ -423,14 +456,14 @@ export default class Home extends Vue {
   } 
 
   .content-container > .table-container > .table > tbody > tr > td.hide-line
-  > span > .fly-component > .fly-line {
+  > button > span > .fly-component > .fly-line {
     width: 100%;
     border: 1px solid #32a0ff;
     height: 1px;
   }
 
   .content-container > .table-container > .table > tbody > tr > td.hide-line
-  > span > .fly-component > .fly-line > .fly-ball {
+  > button > span > .fly-component > .fly-line > .fly-ball {
     width: 12px;
     border: 1px solid #32a0ff;
     height: 12px;

@@ -1,7 +1,7 @@
 import api from './api';
 
 // Helpers
-import { SearchHelper, StatusFilterHelper } from '@/helpers/SearchHelper';
+import { SearchHelper, StatusFilterHelper, FlyFilterHelper } from '@/helpers/SearchHelper';
 export interface Drones {
     id?: number;
     image?: string;
@@ -11,7 +11,7 @@ export interface Drones {
     max_speed?: number;
     average_speed?: number;
     status: string;
-    fly?: number;
+    fly: number;
 }
 
 export const fetchQuery = async (query: string = ''): Promise<Drones[]> => {
@@ -36,4 +36,12 @@ export const fetchSearchStatusData = async (search: string = '') => {
   );
 
   return StatusFilterHelper(search, drones);
+};
+
+export const fetchSearchFlyData = async (search: string = '') => {
+  const { data: drones } = await api.get<Drones[]>(
+    `/drones`,
+  );
+
+  return FlyFilterHelper(search, drones);
 };
